@@ -7,8 +7,8 @@ android {
         applicationId "org.mym.datamocker"
         minSdkVersion 21
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        versionCode rootProject.ext.LIBRARY_VERSION_CODE as int
+        versionName rootProject.ext.LIBRARY_VERSION_NAME as String
     }
     buildTypes {
         release {

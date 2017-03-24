@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">DataMocker</string>
-    <string name="action_settings">Settings</string>
+    <string name="library_version">Library Version: %s</string>
 </resources>

@@ -18,6 +18,12 @@ allprojects {
     }
 }
 
+//Define all module compile version here.
+ext {
+    LIBRARY_VERSION_CODE = 1
+    LIBRARY_VERSION_NAME = "0.0.1-dev"
+}
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
