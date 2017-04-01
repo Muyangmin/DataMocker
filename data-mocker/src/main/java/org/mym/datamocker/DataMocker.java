@@ -1,5 +1,8 @@
 package org.mym.datamocker;
 
+import org.mym.datamocker.rule.ConstraintVerb;
+import org.mym.datamocker.rule.Rule;
+
 /**
  * Copyright 2017 Muyangmin
  * <p>
@@ -21,4 +24,52 @@ package org.mym.datamocker;
  * Created by Muyangmin on 3/24/17.
  */
 public class DataMocker {
+
+    private static Logger sLogger = new Logger() {
+        @Override
+        public void log(String msg) {
+            System.out.println(msg);
+        }
+    };
+
+    public static void setLogger(Logger logger) {
+        sLogger = logger;
+    }
+
+    public static void log(String msg){
+        if (sLogger != null) {
+            sLogger.log(msg);
+        }
+    }
+
+    public DataMocker addRule(String field, ConstraintVerb constraintVerb, Object arg) {
+        return addRule(new Rule(field, null, constraintVerb, arg));
+    }
+
+    public DataMocker addRule(Class clz, ConstraintVerb constraintVerb, Object arg) {
+        return addRule(new Rule(null, clz, constraintVerb, arg));
+    }
+
+    public DataMocker addRule(Rule rule) {
+        return this;
+    }
+
+    public boolean mockBool() {
+        //TODO
+        return false;
+    }
+
+    public int mockInt() {
+        //TODO
+        return 0;
+    }
+
+    public double mockDouble(){
+        //TODO
+        return 0D;
+    }
+
+    public interface Logger {
+        void log(String msg);
+    }
 }
