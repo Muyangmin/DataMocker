@@ -2,6 +2,28 @@
 一个专注于构造任意数据的开发工具库，方便快速开发和测试。
 Java和Android开发环境均可使用。
 
+## 用法展示
+```Java
+DataMocker mocker = new DataMocker();
+
+//基础类型
+boolean randomCond = mocker.newBoolean();
+
+int a = mocker.newInt();
+int bounded = mocker.newInt(10, 20);
+
+double x = mocker.newDouble();
+double y = mocker.newDouble(3d, 3.14);
+
+//大招预警！
+User user = mocker.mockObject(User.class);
+
+User another = mocker.addRule("age", LESS_THAN, 100)
+    .addRule("gender", EXPLICIT_VALUE, 1)
+    .addRule("id", MORE_THAN, 10000000)
+    .mockObject(User.class);
+```
+
 ## 为什么需要这个库？
 在回答这个问题之前，考虑一下可能使用假数据的场景：
 * 开发过程中需要测试一些随机数据，或者边界条件
