@@ -34,6 +34,4 @@ public enum ConstraintVerb {
     @AffectType(types = {Integer.class, Double.class})
     MORE_THAN,
 
-    @AffectType(types = {Object.class})
-    RECURSIVE
 }
