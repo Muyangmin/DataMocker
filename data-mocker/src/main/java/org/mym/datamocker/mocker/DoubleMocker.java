@@ -22,7 +22,7 @@ import org.mym.datamocker.rule.Rule;
  *
  * Created by Muyangmin on Apr 05, 2017.
  */
-public class DoubleMocker extends AbsRandomMocker<Double> {
+public class DoubleMocker extends AbsPrimitiveMocker<Double> {
 
     private Double mMin;
     private Double mMax;

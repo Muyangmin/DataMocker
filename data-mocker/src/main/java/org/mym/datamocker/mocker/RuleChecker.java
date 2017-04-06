@@ -15,15 +15,16 @@
  */
 package org.mym.datamocker.mocker;
 
-/**
- * Mocker implementation of boolean type.
- *
- * Created by Muyangmin on 3/27/17.
- */
-public class BooleanMocker extends AbsPrimitiveMocker<Boolean> {
+import org.mym.datamocker.rule.Rule;
 
-    @Override
-    public Boolean mockWithRule() {
-        return mRandom.nextBoolean();
+/**
+ * Created by Muyangmin on Apr 06, 2017.
+ */
+/*package*/ final class RuleChecker {
+    public static <C1> void checkRuleTypeSafeOrThrow(Class<C1> expected, Rule rule) {
+        if (!expected.isAssignableFrom(rule.args.getClass())) {
+            throw new IllegalArgumentException("Rule cannot be applied because type mismatch: "
+                    + "expected " + expected + ", actual " + rule.args.getClass());
+        }
     }
 }

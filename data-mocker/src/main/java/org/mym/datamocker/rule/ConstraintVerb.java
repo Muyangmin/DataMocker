@@ -33,4 +33,15 @@ public enum ConstraintVerb {
     @AffectType(types = {Integer.class, Double.class})
     MORE_THAN,
 
+    @AffectType(types = {String.class})
+    MAX_LENGTH,
+
+    @AffectType(types = {String.class})
+    MIN_LENGTH,
+
+    @AffectType(types = {String.class})
+    CHAR_ENUM,
+
+    @AffectType(types = {String.class})
+    NULLABLE,
 }

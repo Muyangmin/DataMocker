@@ -15,15 +15,19 @@
  */
 package org.mym.datamocker.mocker;
 
-/**
- * Mocker implementation of boolean type.
- *
- * Created by Muyangmin on 3/27/17.
- */
-public class BooleanMocker extends AbsPrimitiveMocker<Boolean> {
+import org.mym.datamocker.rule.Rule;
 
-    @Override
-    public Boolean mockWithRule() {
-        return mRandom.nextBoolean();
-    }
+import java.util.List;
+
+/**
+ * A logical hierarchy root of mocker interfaces and implementations.
+ * Created by Muyangmin on Apr 06, 2017.
+ */
+public interface IMocker<T> {
+
+    void applyRules(List<Rule> rules);
+
+    void clearRules();
+
+    T mock(Object... args);
 }

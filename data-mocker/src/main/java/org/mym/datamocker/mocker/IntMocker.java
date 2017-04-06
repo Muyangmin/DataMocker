@@ -22,7 +22,7 @@ import org.mym.datamocker.rule.Rule;
  * <p>
  * Created by Muyangmin on 4/5/17.
  */
-public class IntMocker extends AbsRandomMocker<Integer> {
+public class IntMocker extends AbsPrimitiveMocker<Integer> {
 
     private Integer mMin;
     private Integer mMax;

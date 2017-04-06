@@ -29,7 +29,7 @@ import java.util.Random;
  * Created by Muyangmin on 3/27/17.
  */
 @SuppressWarnings("WeakerAccess")
-public abstract class AbsRandomMocker<T> {
+public abstract class AbsPrimitiveMocker<T> implements IMocker<T> {
 
     protected Random mRandom = new Random();
     protected T mExplicitValue;
@@ -44,33 +44,31 @@ public abstract class AbsRandomMocker<T> {
         return handleExplicitValue(rule);
     }
 
+    @Override
     public void clearRules() {
         if (mExplicitValue != null) {
             mExplicitValue = null;
         }
     }
 
-    public void applyRules(List<Rule> ruleList) {
+    @Override
+    public final void applyRules(List<Rule> ruleList) {
         for (Rule rule : ruleList) {
             if (rule == null) {
                 continue;
             }
-            if (applyRule(rule)) {
-                DataMocker.log(rule.toString() + " applied successfully");
-            } else {
-                DataMocker.log(rule + " apply failed!");
-            }
+            applyRule(rule);
         }
     }
 
-    public final T mock() {
+    @Override
+    public final T mock(Object... args) {
         T result;
         if (mExplicitValue != null) {
             result = mExplicitValue;
         } else {
             result = mockWithRule();
         }
-        DataMocker.log("Mock Result: " + result);
         return result;
     }
 
@@ -94,11 +92,8 @@ public abstract class AbsRandomMocker<T> {
         return false;
     }
 
-    protected <C1> void checkRuleTypeSafeOrThrow(Class<C1> expected, Rule rule) {
-        if (!expected.isAssignableFrom(rule.args.getClass())) {
-            throw new IllegalArgumentException("Rule cannot be applied because type mismatch: "
-                    + "expected " + expected + ", actual " + rule.args.getClass());
-        }
+    protected final <C1> void checkRuleTypeSafeOrThrow(Class<C1> expected, Rule rule) {
+        RuleChecker.checkRuleTypeSafeOrThrow(expected, rule);
     }
 
 }

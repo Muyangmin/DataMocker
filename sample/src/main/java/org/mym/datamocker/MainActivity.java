@@ -38,6 +38,12 @@ public class MainActivity extends AppCompatActivity {
                 dataMocker.mockDouble();
 
                 dataMocker.mockDouble( -3, 100);
+
+                dataMocker.mockStringAlpha(30);
+
+                dataMocker.mockStringAlphaNumeric(20);
+
+                dataMocker.mockString(20, true, "好好学习天天向上");
             }
         });
     }
