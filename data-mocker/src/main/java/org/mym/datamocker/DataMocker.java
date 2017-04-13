@@ -44,29 +44,8 @@ public class DataMocker {
 
     private List<Rule> mRuleList = new ArrayList<>();
 
-    private static Logger sLogger = new Logger() {
-        @Override
-        public void log(String msg) {
-            System.out.println(msg);
-        }
-    };
-
-    public static void setLogger(Logger logger) {
-        sLogger = logger;
-    }
-
-    public static void log(String msg) {
-        if (sLogger != null) {
-            sLogger.log(msg);
-        }
-    }
-
-    public DataMocker addRule(String field, ConstraintVerb constraintVerb, Object arg) {
-        return addRule(new Rule(field, null, constraintVerb, arg));
-    }
-
-    public DataMocker addRule(Class clz, ConstraintVerb constraintVerb, Object arg) {
-        return addRule(new Rule(null, clz, constraintVerb, arg));
+    public DataMocker addRule(ConstraintVerb constraintVerb, Object arg) {
+        return addRule(new Rule(constraintVerb, arg));
     }
 
     public DataMocker addRule(Rule rule) {
@@ -92,8 +71,8 @@ public class DataMocker {
     }
 
     public int mockInt(int min, int max) {
-        addRule(((String) null), ConstraintVerb.LESS_THAN, max);
-        addRule(((String) null), ConstraintVerb.MORE_THAN, min);
+        addRule(ConstraintVerb.LESS_THAN, max);
+        addRule(ConstraintVerb.MORE_THAN, min);
         return invokeMocker(mIntMocker, Integer.class);
     }
 
@@ -102,8 +81,8 @@ public class DataMocker {
     }
 
     public double mockDouble(double min, double max) {
-        addRule(((String) null), ConstraintVerb.LESS_THAN, max);
-        addRule(((String) null), ConstraintVerb.MORE_THAN, min);
+        addRule(ConstraintVerb.LESS_THAN, max);
+        addRule(ConstraintVerb.MORE_THAN, min);
         return invokeMocker(mDoubleMocker, Double.class);
     }
 
@@ -162,11 +141,6 @@ public class DataMocker {
         //Clear saved rules
         clearRules();
 
-        DataMocker.log("Mock Result: " + result);
         return result;
-    }
-
-    public interface Logger {
-        void log(String msg);
     }
 }
