@@ -19,11 +19,14 @@ import org.mym.datamocker.mocker.BooleanMocker;
 import org.mym.datamocker.mocker.DoubleMocker;
 import org.mym.datamocker.mocker.IMocker;
 import org.mym.datamocker.mocker.IntMocker;
+import org.mym.datamocker.mocker.ObjectMocker;
 import org.mym.datamocker.mocker.StringMocker;
 import org.mym.datamocker.rule.ConstraintVerb;
 import org.mym.datamocker.rule.Rule;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -71,6 +74,15 @@ public class DataMocker {
         return this;
     }
 
+    public DataMocker addRules(Collection<Rule> ruleList) {
+        mRuleList.addAll(ruleList);
+        return this;
+    }
+
+    public void clearRules() {
+        mRuleList.clear();
+    }
+
     public boolean mockBoolean() {
         return invokeMocker(mBoolMocker, Boolean.class);
     }
@@ -95,42 +107,49 @@ public class DataMocker {
         return invokeMocker(mDoubleMocker, Double.class);
     }
 
-    public String mockString(int length) {
-        return mockString(length, true, null);  //pass null to use default charset
-    }
-
     public String mockStringAlphaNumeric(int length) {
-        return mockString(length, true, StringMocker.CHARSET_ALPHA_NUMERIC);
+        return mockString(length, StringMocker.CHARSET_ALPHA_NUMERIC);
     }
 
     public String mockStringNumeric(int length) {
-        return mockString(length, true, StringMocker.CHARSET_NUMERIC);
+        return mockString(length, StringMocker.CHARSET_NUMERIC);
     }
 
     public String mockStringAlpha(int length) {
-        return mockString(length, true, StringMocker.CHARSET_LETTERS);
+        return mockString(length, StringMocker.CHARSET_LETTERS);
     }
 
-    public String mockString(int length, boolean randomLength, String charset) {
-        return mockString(length, 0, randomLength, false, charset);
+    public String mockString(int length, String charset) {
+        return mockString(length, 0, false, false, charset);
     }
 
-    public String mockString(int maxLength, int minLength, boolean randomLength,
+    public String mockString(int maxLength, int minLength, boolean fixedLength,
                              boolean nullable, String charset) {
-        addRule(new Rule(ConstraintVerb.MAX_LENGTH, maxLength));
-        if (randomLength) {
-            addRule(new Rule(ConstraintVerb.MIN_LENGTH, minLength));
-        }
-        if (nullable) {
-            addRule(new Rule(ConstraintVerb.NULLABLE, true));
-        }
+        List<Rule> rules = new ArrayList<>();
+        rules.add(new Rule(ConstraintVerb.MAX_LENGTH, maxLength));
+        rules.add(new Rule(ConstraintVerb.MIN_LENGTH, minLength));
+        rules.add(new Rule(ConstraintVerb.FIXED_LENGTH, fixedLength));
+        rules.add(new Rule(ConstraintVerb.NULLABLE, nullable));
         if (charset != null) {
             if (charset.isEmpty()) {
                 throw new IllegalArgumentException("Cannot generate String from empty charset.");
             }
             addRule(new Rule(ConstraintVerb.CHAR_ENUM, charset));
         }
+        return mockString(rules);
+    }
+
+    public String mockString(Rule... rules) {
+        return mockString(Arrays.asList(rules));
+    }
+
+    public String mockString(List<Rule> ruleList) {
+        addRules(ruleList);
         return invokeMocker(mStrMocker, String.class);
+    }
+
+    public <Obj> Obj mockObject(Class<Obj> clazz) {
+        return new ObjectMocker<Obj>().mock(clazz);
     }
 
     private <T> T invokeMocker(IMocker<T> mocker, Object... args) {
@@ -141,7 +160,7 @@ public class DataMocker {
         T result = mocker.mock(args);
 
         //Clear saved rules
-        mRuleList.clear();
+        clearRules();
 
         DataMocker.log("Mock Result: " + result);
         return result;

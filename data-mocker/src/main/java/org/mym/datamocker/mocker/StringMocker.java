@@ -29,7 +29,9 @@ import java.util.Random;
 public class StringMocker implements IMocker<String> {
 
     //------------------- DEFAULT CHARSETS --------------------
+    @SuppressWarnings("WeakerAccess")
     public static final String CHARSET_ALPHA_LOWERCASE = "qwertyuiopasdfghjklzxcvbnm";
+    @SuppressWarnings("WeakerAccess")
     public static final String CHARSET_ALPHA_UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     public static final String CHARSET_NUMERIC = "0123456789";
     public static final String CHARSET_LETTERS = CHARSET_ALPHA_LOWERCASE
@@ -42,6 +44,7 @@ public class StringMocker implements IMocker<String> {
     private Integer mMinLength;
 
     private boolean mNullable;
+    private boolean mFixedLength;
 
     /**
      * Enumeration of available chars.
@@ -58,11 +61,19 @@ public class StringMocker implements IMocker<String> {
             switch (rule.constraint) {
                 case MAX_LENGTH:
                     RuleChecker.checkRuleTypeSafeOrThrow(Integer.class, rule);
-                    mMaxLength = ((Integer) rule.args);
+                    int maxLength = ((Integer) rule.args);
+                    if (maxLength < 0) {
+                        throw new IllegalArgumentException("length must be non-negative!");
+                    }
+                    mMaxLength = maxLength;
                     break;
                 case MIN_LENGTH:
                     RuleChecker.checkRuleTypeSafeOrThrow(Integer.class, rule);
-                    mMinLength = ((Integer) rule.args);
+                    int minLength = ((Integer) rule.args);
+                    if (minLength < 0) {
+                        throw new IllegalArgumentException("length must be non-negative!");
+                    }
+                    mMinLength = minLength;
                     break;
                 case CHAR_ENUM:
                     RuleChecker.checkRuleTypeSafeOrThrow(String.class, rule);
@@ -72,6 +83,10 @@ public class StringMocker implements IMocker<String> {
                     RuleChecker.checkRuleTypeSafeOrThrow(Boolean.class, rule);
                     mNullable = ((Boolean) rule.args);
                     break;
+                case FIXED_LENGTH:
+                    RuleChecker.checkRuleTypeSafeOrThrow(Boolean.class, rule);
+                    mFixedLength = ((Boolean) rule.args);
+                    break;
             }
         }
     }
@@ -80,6 +95,9 @@ public class StringMocker implements IMocker<String> {
     public void clearRules() {
         mMaxLength = null;
         mMinLength = null;
+        mNullable = false;
+        mFixedLength = false;
+        mCharSet = CHARSET_ALPHA_NUMERIC;
     }
 
     @Override
@@ -95,13 +113,10 @@ public class StringMocker implements IMocker<String> {
 
         //Determine string length
         int length;
-        //treat as a random length only if both min and max != null.
-        if (mMinLength != null) {
-            length = mocker.mockInt(mMinLength, mMaxLength);
-        }
-        //treat as a constant-length str
-        else {
+        if (mFixedLength || (mMinLength == null)) {
             length = mMaxLength;
+        } else {
+            length = mocker.mockInt(mMinLength, mMaxLength);
         }
 
         //Generate Char sequences

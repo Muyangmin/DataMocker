@@ -13,15 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mym.datamocker.rule;
+package org.mym.datamocker.rule.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Indicate the non-primitive and non-string class field should be recursively mocked.
+ * By default, all those field would be skipped so those would be always null as normal Java
+ * initialization.
+ * Created by Muyangmin on Apr 06, 2017.
+ */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
-public @interface AffectType {
-    Class[] types();
+@Target(ElementType.TYPE)
+public @interface RecursiveMock {
+
 }

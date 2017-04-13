@@ -40,8 +40,14 @@ public enum ConstraintVerb {
     MIN_LENGTH,
 
     @AffectType(types = {String.class})
+    FIXED_LENGTH,
+
+    @AffectType(types = {String.class})
     CHAR_ENUM,
 
     @AffectType(types = {String.class})
     NULLABLE,
+
+    @AffectType(types = {Object.class})
+    RECURSIVE,
 }
