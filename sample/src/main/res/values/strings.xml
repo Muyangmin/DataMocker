@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">DataMocker</string>
     <string name="library_version">Library Version: %s</string>
+    <string name="main_field_name">Field Name</string>
+    <string name="main_field_type">Field Type</string>
+    <string name="main_field_value">Field Value</string>
 </resources>

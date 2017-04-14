@@ -111,9 +111,13 @@ public class StringMocker implements IMocker<String> {
         Objects.requireNonNull(mMaxLength);
         Objects.requireNonNull(mCharSet);
 
+        if (mMinLength == null){
+            mMinLength = 0;
+        }
+
         //Determine string length
         int length;
-        if (mFixedLength || (mMinLength == null)) {
+        if (mFixedLength) {
             length = mMaxLength;
         } else {
             length = mocker.mockInt(mMinLength, mMaxLength);
