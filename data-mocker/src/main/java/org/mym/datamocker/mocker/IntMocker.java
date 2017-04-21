@@ -17,6 +17,8 @@ package org.mym.datamocker.mocker;
 
 import org.mym.datamocker.rule.Rule;
 
+import java.util.Random;
+
 /**
  * Mocker implementation of boolean type.
  * <p>
@@ -50,15 +52,23 @@ public class IntMocker extends AbsPrimitiveMocker<Integer> {
 
     @Override
     protected Integer mockWithRule() {
+        //Do not use Math.nextInt(x) directly; that may cause an IllegalArgumentException
+        // when param is non-positive.
         if (mMax != null && mMin != null) {
-            return mMin + mRandom.nextInt(mMax - mMin);
+            return getRandomInt(mMin, mMax, mRandom);
         }
         if (mMax != null) {
-            return mRandom.nextInt(mMax);
+            return getRandomInt(0, mMax, mRandom);
         }
         if (mMin != null) {
-            return mMin + mRandom.nextInt();
+            return getRandomInt(mMin, Integer.MAX_VALUE, mRandom);
         }
         return mRandom.nextInt();
+    }
+
+    /*package*/ static int getRandomInt(int min, int max, Random random) {
+        int dif = max - min;
+        float number = random.nextFloat();              // 0 <= number < 1
+        return min + Math.round(number * dif);
     }
 }

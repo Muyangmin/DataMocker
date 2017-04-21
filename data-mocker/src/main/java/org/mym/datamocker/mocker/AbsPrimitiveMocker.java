@@ -25,7 +25,7 @@ import java.util.Random;
 
 /**
  * Base class for mocker implementations, currently depends on java.util.Random class.
- *
+ * <p>
  * Created by Muyangmin on 3/27/17.
  */
 @SuppressWarnings("WeakerAccess")
@@ -34,7 +34,7 @@ public abstract class AbsPrimitiveMocker<T> implements IMocker<T> {
     protected Random mRandom = new Random();
     protected T mExplicitValue;
 
-    protected abstract T mockWithRule();
+    protected abstract T mockWithRule() throws IllegalArgumentException;
 
     /**
      * @param rule rule to be applied; not null.
@@ -62,7 +62,7 @@ public abstract class AbsPrimitiveMocker<T> implements IMocker<T> {
     }
 
     @Override
-    public final T mock(Object... args) {
+    public final T mock(Object... args) throws IllegalArgumentException {
         T result;
         if (mExplicitValue != null) {
             result = mExplicitValue;

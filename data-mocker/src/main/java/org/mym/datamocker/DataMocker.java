@@ -87,33 +87,33 @@ public class DataMocker {
     }
 
     public String mockStringAlphaNumeric(int length) {
-        return mockString(length, StringMocker.CHARSET_ALPHA_NUMERIC);
+        return mockString(0, length, false, false, null);
     }
 
-    public String mockStringNumeric(int length) {
-        return mockString(length, StringMocker.CHARSET_NUMERIC);
+    public String mockStringMatchesRegex(String regex) {
+        return mockString(0, 0, false, false, regex);
     }
 
-    public String mockStringAlpha(int length) {
-        return mockString(length, StringMocker.CHARSET_LETTERS);
-    }
-
-    public String mockString(int length, String charset) {
-        return mockString(length, 0, false, false, charset);
-    }
-
-    public String mockString(int maxLength, int minLength, boolean fixedLength,
-                             boolean nullable, String charset) {
+    /**
+     * Mock a string.
+     * @param minLength min length of str, only affects when <code>regex</code> is null.
+     * @param maxLength max length of str, only affects when <code>regex</code> is null.
+     * @param fixedLength force generate a fixed length str, only affects when <code>regex</code> is null.
+     * @param nullable whether this result can be null
+     * @param regex an optional regex. if not null, the result would match this.
+     *              Note: if you pass a dangerous regex that can lead to potential overflow or oom,
+     *              an {@link IllegalArgumentException} may be thrown.
+     * @return the mocked string.
+     */
+    public String mockString(int minLength, int maxLength, boolean fixedLength,
+                             boolean nullable, String regex) {
         List<Rule> rules = new ArrayList<>();
         rules.add(new Rule(ConstraintVerb.MAX_LENGTH, maxLength));
         rules.add(new Rule(ConstraintVerb.MIN_LENGTH, minLength));
         rules.add(new Rule(ConstraintVerb.FIXED_LENGTH, fixedLength));
         rules.add(new Rule(ConstraintVerb.NULLABLE, nullable));
-        if (charset != null) {
-            if (charset.isEmpty()) {
-                throw new IllegalArgumentException("Cannot generate String from empty charset.");
-            }
-            addRule(new Rule(ConstraintVerb.CHAR_ENUM, charset));
+        if (regex != null) {
+            rules.add(new Rule(ConstraintVerb.MATCH_REGEX, regex));
         }
         return mockString(rules);
     }

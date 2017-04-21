@@ -43,7 +43,8 @@ public enum ConstraintVerb {
     FIXED_LENGTH,
 
     @AffectType(types = {String.class})
-    CHAR_ENUM,
+//    CHAR_ENUM,
+    MATCH_REGEX,
 
     @AffectType(types = {String.class})
     NULLABLE,

@@ -13,21 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mym.datamocker.mocker;
+package org.mym.datamocker.rule.annotation;
 
-import org.mym.datamocker.rule.Rule;
+import org.mym.datamocker.rule.AffectType;
 
-import java.util.List;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
- * A logical hierarchy root of mocker interfaces and implementations.
- * Created by Muyangmin on Apr 06, 2017.
+ * Force the result string to fit a specified regex pattern.
+ * Created by Muyangmin on Apr 21, 2017.
  */
-public interface IMocker<T> {
-
-    void applyRules(List<Rule> rules);
-
-    void clearRules();
-
-    T mock(Object... args) throws IllegalArgumentException;
+@Retention(RetentionPolicy.RUNTIME)
+@AffectType(types = {String.class})
+public @interface MatchRegex {
+    String value();
 }

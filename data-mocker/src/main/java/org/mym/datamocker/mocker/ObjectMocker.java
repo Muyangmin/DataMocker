@@ -22,6 +22,7 @@ import org.mym.datamocker.rule.Rule;
 import org.mym.datamocker.rule.annotation.CharSet;
 import org.mym.datamocker.rule.annotation.FixedLength;
 import org.mym.datamocker.rule.annotation.LessThan;
+import org.mym.datamocker.rule.annotation.MatchRegex;
 import org.mym.datamocker.rule.annotation.MaxLength;
 import org.mym.datamocker.rule.annotation.MinLength;
 import org.mym.datamocker.rule.annotation.MoreThan;
@@ -240,8 +241,8 @@ public class ObjectMocker<T> implements IMocker<T> {
                 rules.add(new Rule(ConstraintVerb.FIXED_LENGTH, true));
                 rules.add(new Rule(ConstraintVerb.MAX_LENGTH, ((FixedLength) ano).value()));
             } else //noinspection ConstantConditions
-                if (ano instanceof CharSet) {
-                    rules.add(new Rule(ConstraintVerb.CHAR_ENUM, ((CharSet) ano).value()));
+                if (ano instanceof MatchRegex) {
+                    rules.add(new Rule(ConstraintVerb.MATCH_REGEX, ((MatchRegex) ano).value()));
                 }
 
         }

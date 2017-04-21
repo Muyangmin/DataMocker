@@ -39,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
         //Resolve an empty object (without mocking data)
         mAdapter.resolveFieldsAndRefresh(new User(), true);
 
-        final DataMocker dataMocker = new DataMocker();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -47,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
+                final DataMocker dataMocker = new DataMocker();
 
                 dataMocker.mockBoolean();
                 dataMocker.mockInt();
@@ -57,11 +57,9 @@ public class MainActivity extends AppCompatActivity {
 
                 dataMocker.mockDouble(-3, 100);
 
-                dataMocker.mockStringAlpha(30);
-
                 dataMocker.mockStringAlphaNumeric(20);
 
-                dataMocker.mockString(20, "好好学习天天向上");
+                dataMocker.mockStringMatchesRegex("[\\u4e00-\\u9fa5]");
 
                 User user = dataMocker.mockObject(User.class);
                 mAdapter.resolveFieldsAndRefresh(user, false);

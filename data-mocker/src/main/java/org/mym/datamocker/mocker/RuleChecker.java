@@ -27,4 +27,12 @@ import org.mym.datamocker.rule.Rule;
                     + "expected " + expected + ", actual " + rule.args.getClass());
         }
     }
+
+    static boolean isSafeRegexOrThrow(String regex) {
+        if (regex.length() == 0){
+            //an empty regex should never be generated!
+            throw new IllegalArgumentException("empty regex should never be used to mock strings.");
+        }
+        return true;
+    }
 }

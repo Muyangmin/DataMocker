@@ -19,8 +19,13 @@ import org.mym.datamocker.DataMocker;
 import org.mym.datamocker.rule.Rule;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.Locale;
 import java.util.Random;
+
+import dk.brics.automaton.Automaton;
+import dk.brics.automaton.RegExp;
+import dk.brics.automaton.State;
+import dk.brics.automaton.Transition;
 
 /**
  * Mocker implementation for Strings.
@@ -28,17 +33,10 @@ import java.util.Random;
  */
 public class StringMocker implements IMocker<String> {
 
-    //------------------- DEFAULT CHARSETS --------------------
+    //------------------- DEFAULT REGEX --------------------
     @SuppressWarnings("WeakerAccess")
-    public static final String CHARSET_ALPHA_LOWERCASE = "qwertyuiopasdfghjklzxcvbnm";
-    @SuppressWarnings("WeakerAccess")
-    public static final String CHARSET_ALPHA_UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    public static final String CHARSET_NUMERIC = "0123456789";
-    public static final String CHARSET_LETTERS = CHARSET_ALPHA_LOWERCASE
-            + CHARSET_ALPHA_UPPERCASE;
-    public static final String CHARSET_ALPHA_NUMERIC = CHARSET_ALPHA_LOWERCASE
-            + CHARSET_ALPHA_UPPERCASE + CHARSET_NUMERIC;
-    //------------------- DEFAULT CHARSETS --------------------
+    public static final String DEFAULT_REGEX = "[0-9a-zA-Z]{%d}";
+    //------------------- DEFAULT REGEX --------------------
 
     private Integer mMaxLength;
     private Integer mMinLength;
@@ -47,13 +45,12 @@ public class StringMocker implements IMocker<String> {
     private boolean mFixedLength;
 
     /**
-     * Enumeration of available chars.
-     * This is very useful to make sure that generated string is formatted as expected.
-     * E.g, you can put "0123456789" so that result string must be numbers.
+     * Regex limitation of results.
+     * based on {@link dk.brics.automaton.Automaton}.
      */
-    private String mCharSet = CHARSET_ALPHA_NUMERIC;
+    private String mRegex;
 
-    private Random mCharGenerator = new Random();
+    private Random mRandom = new Random();
 
     @Override
     public void applyRules(List<Rule> rules) {
@@ -75,9 +72,12 @@ public class StringMocker implements IMocker<String> {
                     }
                     mMinLength = minLength;
                     break;
-                case CHAR_ENUM:
+                case MATCH_REGEX:
                     RuleChecker.checkRuleTypeSafeOrThrow(String.class, rule);
-                    mCharSet = ((String) rule.args);
+                    String regex = ((String) rule.args);
+                    if (RuleChecker.isSafeRegexOrThrow(regex)) {
+                        mRegex = regex;
+                    }
                     break;
                 case NULLABLE:
                     RuleChecker.checkRuleTypeSafeOrThrow(Boolean.class, rule);
@@ -97,7 +97,7 @@ public class StringMocker implements IMocker<String> {
         mMinLength = null;
         mNullable = false;
         mFixedLength = false;
-        mCharSet = CHARSET_ALPHA_NUMERIC;
+        mRegex = null;
     }
 
     @Override
@@ -108,27 +108,59 @@ public class StringMocker implements IMocker<String> {
             return null;
         }
 
-        Objects.requireNonNull(mMaxLength);
-        Objects.requireNonNull(mCharSet);
-
-        if (mMinLength == null){
-            mMinLength = 0;
-        }
-
-        //Determine string length
-        int length;
-        if (mFixedLength) {
-            length = mMaxLength;
+        final String regex;
+        if (mRegex != null) {
+            regex = mRegex;
         } else {
-            length = mocker.mockInt(mMinLength, mMaxLength);
+            //Determine string length
+            if (mMaxLength == null) {
+                mMaxLength = 32;
+            }
+            if (mMinLength == null) {
+                mMinLength = 0;
+            }
+            int length;
+            if (mFixedLength) {
+                length = mMaxLength;
+            } else {
+                length = getRandomInt(mMinLength, mMaxLength, mRandom);
+            }
+
+            //Generate a regex using alphabetic chars
+            regex = String.format(Locale.US, DEFAULT_REGEX, length);
         }
 
         //Generate Char sequences
-        char[] chars = new char[length];
-        for (int i = 0; i < length; i++) {
-            int x = mCharGenerator.nextInt(mCharSet.length());
-            chars[i] = mCharSet.charAt(x);
+        Automaton automaton = new RegExp(regex).toAutomaton();
+        StringBuilder builder = new StringBuilder();
+        generate(builder, automaton.getInitialState());
+        return builder.toString();
+    }
+
+    private void generate(StringBuilder builder, State state) {
+        List<Transition> transitions = state.getSortedTransitions(true);
+        if (transitions.size() == 0) {
+            //Here state.isAccept must be true
+//            assert state.isAccept();
+            return;
         }
-        return new String(chars);
+        int nroptions = state.isAccept() ? transitions.size() : transitions.size() - 1;
+        int option = getRandomInt(0, nroptions, mRandom);
+        if (state.isAccept() && option == 0) {          // 0 is considered stop
+            return;
+        }
+        // Moving on to next transition
+        Transition transition = transitions.get(option - (state.isAccept() ? 1 : 0));
+        appendChoice(builder, transition);
+        generate(builder, transition.getDest());
+    }
+
+    private void appendChoice(StringBuilder builder, Transition transition) {
+        char c = (char) getRandomInt(transition.getMin(), transition.getMax(), mRandom);
+        builder.append(c);
+    }
+
+    private int getRandomInt(int min, int max, Random random) {
+        return IntMocker.getRandomInt(min, max, random);
     }
 }

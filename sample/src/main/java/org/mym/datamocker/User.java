@@ -18,6 +18,7 @@ package org.mym.datamocker;
 import org.mym.datamocker.rule.annotation.CharSet;
 import org.mym.datamocker.rule.annotation.FixedLength;
 import org.mym.datamocker.rule.annotation.LessThan;
+import org.mym.datamocker.rule.annotation.MatchRegex;
 import org.mym.datamocker.rule.annotation.MaxLength;
 import org.mym.datamocker.rule.annotation.MoreThan;
 import org.mym.datamocker.rule.annotation.RecursiveMock;
@@ -32,6 +33,7 @@ import org.mym.datamocker.rule.annotation.RecursiveMock;
 @RecursiveMock
 public class User {
     @FixedLength(5)
+    @MatchRegex("[^0-9]+")
     String userName;
 
     byte aByte;
@@ -57,6 +59,7 @@ public class User {
     @CharSet("京津沪渝辽吉黑云贵川湘鄂赣疆蒙藏")
     String location;
 
+    @MatchRegex("[甲乙丙丁午己庚辛壬癸]{3,5}")
     private String favGirl;
 
     @Override
