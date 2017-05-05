@@ -2,7 +2,7 @@ apply plugin: 'java'
 
 dependencies {
 //    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile files('libs/automaton-1.11.8.jar')
+    compile 'dk.brics.automaton:automaton:1.11-8'
 }
 
 sourceCompatibility = "1.7"
