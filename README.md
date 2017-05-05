@@ -2,6 +2,11 @@
 一个专注于构造任意数据的开发工具库，方便快速开发和测试。
 Java和Android开发环境均可使用。
 
+## 依赖文档
+```Groovy
+compile 'org.mym.datamocker:data-mocker:0.1.0'
+```
+
 ## 用法展示
 ```Java
 DataMocker mocker = new DataMocker();
