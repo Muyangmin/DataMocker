@@ -20,20 +20,58 @@ int bounded = mocker.newInt(10, 20);
 double x = mocker.newDouble();
 double y = mocker.newDouble(3d, 3.14);
 
-//大招预警！
+// ------- 大招预警 ---------
+
+@RecursiveMock
+public class User {
+    @FixedLength(5)
+    @MatchRegex("[^0-9]+")
+    String userName;
+
+    private byte aByte;
+
+    protected Byte bByte;
+
+    public short aShort;
+
+    /*package*/ Integer anInteger;
+
+    @MoreThan(18)
+    @LessThan(26)
+    public int age;
+
+    double scoreRate;
+
+    Double balance;
+
+    @MoreThan(38)
+    boolean isVip;
+
+    @MaxLength(10)
+    @MatchRegex("[京津沪渝辽吉黑云贵川湘鄂赣疆蒙藏]")
+    String location;
+
+    @MatchRegex("[甲乙丙丁午己庚辛壬癸]{3,5}")
+    private String favGirl;
+}
+
+
 User user = mocker.mockObject(User.class);
 
-User another = mocker.addRule("age", LESS_THAN, 100)
-    .addRule("gender", EXPLICIT_VALUE, 1)
-    .addRule("id", MORE_THAN, 10000000)
-    .mockObject(User.class);
+//User another = mocker.addRule("age", LESS_THAN, 100)
+//    .addRule("gender", EXPLICIT_VALUE, 1)
+//    .addRule("id", MORE_THAN, 10000000)
+//    .mockObject(User.class);
 ```
+
+关于上述代码中出现的`@FixedLength`,`@MatchRegex`等注解的含义，以及目前所有支持的注解，请[查看可用的约束注解](https://github.com/Muyangmin/DataMocker/tree/master/data-mocker/src/main/java/org/mym/datamocker/rule/annotation).
 
 ## 为什么需要这个库？
 在回答这个问题之前，考虑一下可能使用假数据的场景：
 * 开发过程中需要测试一些随机数据，或者边界条件
 * API尚未开发完成，只有格式而不能调通
 * 服务器故障，但又需要调试客户端逻辑
+* 想开发一个完整的APP练手，又不想被API的版本演进束缚手脚
 
 比如有这么一个函数:
 ```Java

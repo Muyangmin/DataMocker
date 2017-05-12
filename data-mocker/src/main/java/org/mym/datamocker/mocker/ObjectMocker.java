@@ -19,7 +19,6 @@ import org.mym.datamocker.DataMocker;
 import org.mym.datamocker.rule.AffectType;
 import org.mym.datamocker.rule.ConstraintVerb;
 import org.mym.datamocker.rule.Rule;
-import org.mym.datamocker.rule.annotation.CharSet;
 import org.mym.datamocker.rule.annotation.FixedLength;
 import org.mym.datamocker.rule.annotation.LessThan;
 import org.mym.datamocker.rule.annotation.MatchRegex;

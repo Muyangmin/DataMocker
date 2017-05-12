@@ -15,7 +15,6 @@
  */
 package org.mym.datamocker;
 
-import org.mym.datamocker.rule.annotation.CharSet;
 import org.mym.datamocker.rule.annotation.FixedLength;
 import org.mym.datamocker.rule.annotation.LessThan;
 import org.mym.datamocker.rule.annotation.MatchRegex;
@@ -56,7 +55,7 @@ public class User {
     boolean isVip;
 
     @MaxLength(10)
-    @CharSet("京津沪渝辽吉黑云贵川湘鄂赣疆蒙藏")
+    @MatchRegex("[京津沪渝辽吉黑云贵川湘鄂赣疆蒙藏]")
     String location;
 
     @MatchRegex("[甲乙丙丁午己庚辛壬癸]{3,5}")
